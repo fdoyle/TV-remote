@@ -1,0 +1,17 @@
+@host = http://localhost
+@port = 80
+
+@baseUrl = http://localhost:80
+
+###
+POST {{baseUrl}}/on
+
+###
+
+POST {{baseUrl}}/off
+
+###
+
+GET {{baseUrl}}/status
+
+###
