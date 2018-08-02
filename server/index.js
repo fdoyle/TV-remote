@@ -22,6 +22,6 @@ app.post('/off',(req, res)=>{
 
 })
 
-// remote.on('keypress', evt=>{
-//     console.log(`user pressed the key "${evt.key}" with code "${evt.keyCode}"`);
-// })
+remote.on('keypress', evt=>{
+    console.log(`user pressed the key "${evt.key}" with code "${evt.keyCode}"`);
+})
