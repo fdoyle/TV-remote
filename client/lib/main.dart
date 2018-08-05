@@ -46,7 +46,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 1;
-  String myString = "nothing here yet!";
 
   void _incrementCounter() {
     setState(() {
@@ -59,15 +58,26 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  void sendRequest() {
-    http
-        .get('https://jsonplaceholder.typicode.com/posts/${_counter}')
-        .then((raw) {
+  void sendRequest() {}
+
+  void sendStandby() {
+    sendTransaction("raspberrypi:3000", "standby 0");
+  }
+
+  void sendOn() {
+    sendTransaction("raspberrypi:3000", "on 0");
+  }
+
+  void sendTransaction(String host, String transaction) {
+    debugPrint(host);
+    debugPrint(transaction);
+    String payload = '{"transaction":"$transaction"}';
+    debugPrint(payload);
+    http.post('http://$host/raw', 
+    body: payload,
+    headers: {"content-type":"application/json"}
+    ).then((raw) {
       debugPrint(raw.body);
-      Map responseObject = new JsonCodec().decode(raw.body);
-      setState(() {
-        myString = responseObject['body'];
-      });
     });
   }
 
@@ -104,28 +114,17 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            new Text(
-              'You have pushed the button this many times:',
-            ),
-            new Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.display1,
+            new FlatButton(
+              child: new Text("On"),
+              onPressed: sendOn,
             ),
             new FlatButton(
-              child: new Text("click me!"),
-              onPressed: sendRequest,
+              child: new Text("Off"),
+              onPressed: sendStandby,
             ),
-            new Text(myString),
           ],
         ),
       ),
-      floatingActionButton: new FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: new Icon(Icons.refresh),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
-
-class 
