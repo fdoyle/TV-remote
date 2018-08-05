@@ -6,6 +6,7 @@ const bodyParser = require('body-parser')
 var nodecec = require('node-cec')
 
 var NodeCec = nodecec.NodeCec
+var CEC     = nodecec.CEC;
 var cec = new NodeCec('node-cec-monitor')
 
 
