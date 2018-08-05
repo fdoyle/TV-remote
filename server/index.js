@@ -30,6 +30,10 @@ cec.on('ROUTING_CHANGE', function (packet, fromSource, toSource) {
     console.log('Routing changed from ' + fromSource + ' to ' + toSource + '.');
 });
 
+cec.on('', function (packet, fromSource, toSource) {
+    console.log('Routing changed from ' + fromSource + ' to ' + toSource + '.');
+});
+
 
 
 function startServer() {
@@ -51,7 +55,9 @@ function startServer() {
         var transaction = req.body.transaction
         console.log(JSON.stringify(transaction))
         cec.send(transaction);
+        // var intTransaction = parseInt(transaction, 16)
+        // cec.sendCommand(intTransaction)
     })
     app.listen(3000, () => console.log('Listening on port 3000'))
 }
-cec.start('cec-client', '-m', '-d', '8', '-b', 'r');
+cec.start('cec-client', '-d', '8', '-b', 'r');

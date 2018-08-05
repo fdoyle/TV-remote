@@ -1,7 +1,5 @@
-@host = http://localhost
-@port = 80
 
-@baseUrl = http://localhost:80
+@baseUrl = http://raspberrypi:3000
 
 ###
 POST {{baseUrl}}/on
@@ -15,3 +13,10 @@ POST {{baseUrl}}/off
 GET {{baseUrl}}/status
 
 ###
+
+POST {{baseUrl}}/raw HTTP/1.1
+content-type: application/json
+
+{
+    "transaction":"FF:44:40"
+}
