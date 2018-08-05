@@ -1,27 +1,56 @@
 const express = require('express')
 const app = express()
 
-const cec = require('hdmi-cec')
+const bodyParser = require('body-parser')
 
-const cecRemote = cec.Remote;
-const commander = cec.Commander;
-const television = cec.Television;
-const monitor = cec.CecMonitor;
-const receiver = cec.Receiver;
+var nodecec = require('node-cec')
 
-const remote = new cecRemote();
+var NodeCec = nodecec.NodeCec
+var cec = new NodeCec('node-cec-monitor')
 
-app.get('/', (req, res)=> res.send('Hello World'))
-app.listen(3000, ()=>console.log('Listening on port 3000'))
 
-app.post('/on', (req, res)=>{
+app.use(bodyParser.json())
 
-})
+cec.once('ready', function (client) {
+    console.log(' -- READY -- ');
+    client.sendCommand(0xf0, CEC.Opcode.GIVE_DEVICE_POWER_STATUS);
+    startServer();
+});
 
-app.post('/off',(req, res)=>{
+process.on('SIGINT', function () {
+    if (cec != null) {
+        cec.stop();
+    }
+    process.exit();
+});
 
-})
 
-remote.on('keypress', evt=>{
-    console.log(`user pressed the key "${evt.key}" with code "${evt.keyCode}"`);
-})
+cec.on('ROUTING_CHANGE', function (packet, fromSource, toSource) {
+    console.log('Routing changed from ' + fromSource + ' to ' + toSource + '.');
+});
+
+
+
+function startServer() {
+    app.get('/', (req, res) => res.send("This is the remote api"))
+
+    app.post('/on', (req, res) => {
+
+    })
+
+    app.post('/off', (req, res) => {
+
+    })
+
+    app.post('/input', (req, res) => {
+
+    })
+
+    app.post('/raw', (req, res)=>{
+        var transaction = req.body.transaction
+        console.log(JSON.stringify(transaction))
+        cec.send(transaction);
+    })
+    app.listen(3000, () => console.log('Listening on port 3000'))
+}
+cec.start('cec-client', '-m', '-d', '8', '-b', 'r');
