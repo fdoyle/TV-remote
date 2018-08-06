@@ -15,6 +15,7 @@ app.use(bodyParser.json())
 cec.once('ready', function (client) {
     console.log(' -- READY -- ');
     client.sendCommand(0xf0, CEC.Opcode.GIVE_DEVICE_POWER_STATUS);
+    client.send('scan')
     startServer();
 });
 
