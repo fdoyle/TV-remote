@@ -32,7 +32,7 @@ cec.on('ROUTING_CHANGE', function (packet, fromSource, toSource) {
 });
 
 cec.on('SET_OSD_NAME', function (packet, source) {
-    console.log("Set OSD name " + source);
+    console.log("Set OSD name " + JSON.stringify(packet) + source);
 });
 
 // cec.on('data', function (packet) {
