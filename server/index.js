@@ -31,7 +31,7 @@ process.on('SIGINT', function () {
 // });
 
 cec.on('data',function (packet) {
-    console.log("packet");
+    console.log("packet " + JSON.stringify(packet));
 });
 
 
