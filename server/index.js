@@ -65,4 +65,4 @@ function startServer() {
     })
     app.listen(3000, () => console.log('Listening on port 3000'))
 }
-cec.start('cec-client', '-d', '8', '-b', 'r')
+cec.start('cec-client', '-b', 'r')
