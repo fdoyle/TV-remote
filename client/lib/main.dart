@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'remote.dart';
 
 void main() => runApp(new MyApp());
 
@@ -23,6 +22,63 @@ class MyApp extends StatelessWidget {
       ),
       home: new MyHomePage(title: 'TV Remote'),
     );
+  }
+}
+
+class RemoteControl extends StatelessWidget {
+  final String host;
+  final String port;
+  final String name;
+
+  RemoteControl(this.name, this.host, this.port);
+
+  @override
+  Widget build(BuildContext context) {
+    Remote remote = new Remote(host: host, port: port);
+
+    return new Card(
+        margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+        child: new Container(
+            margin: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 10.0),
+            child: new Row(
+              mainAxisSize: MainAxisSize.max,
+              children: <Widget>[
+                new Expanded(
+                    child: new Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    new Text(
+                      '$name',
+                      textAlign: TextAlign.left,
+                      style: new TextStyle(
+                          fontWeight: FontWeight.bold, fontSize: 20.0),
+                    ),
+                    new Text(
+                      '$host:$port',
+                      textAlign: TextAlign.left,
+                      style: new TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 10.0),
+                    ),
+                  ],
+                )),
+                new Row(
+                  children: <Widget>[
+                    new IconButton(
+                        padding: new EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 10.0),
+                        icon: new Icon(Icons.flash_on),
+                        onPressed: remote.sendOn),
+                    new IconButton(
+                        padding: new EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 10.0),
+                        icon: new Icon(Icons.flash_off),
+                        onPressed: remote.sendStandby),
+                  ],
+                )
+              ],
+            )));
   }
 }
 
@@ -60,27 +116,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void sendRequest() {}
 
-  void sendStandby() {
-    sendTransaction("raspberrypi:3000", "standby 0");
-  }
-
-  void sendOn() {
-    sendTransaction("raspberrypi:3000", "on 0");
-  }
-
-  void sendTransaction(String host, String transaction) {
-    debugPrint(host);
-    debugPrint(transaction);
-    String payload = '{"transaction":"$transaction"}';
-    debugPrint(payload);
-    http.post('http://$host/raw', 
-    body: payload,
-    headers: {"content-type":"application/json"}
-    ).then((raw) {
-      debugPrint(raw.body);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -89,6 +124,7 @@ class _MyHomePageState extends State<MyHomePage> {
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
+
     return new Scaffold(
       appBar: new AppBar(
         // Here we take the value from the MyHomePage object that was created by
@@ -112,16 +148,10 @@ class _MyHomePageState extends State<MyHomePage> {
           // center the children vertically; the main axis here is the vertical
           // axis because Columns are vertical (the cross axis would be
           // horizontal).
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            new FlatButton(
-              child: new Text("On"),
-              onPressed: sendOn,
-            ),
-            new FlatButton(
-              child: new Text("Off"),
-              onPressed: sendStandby,
-            ),
+            new RemoteControl("Living Room", "raspberrypi", "3000"),
+            new RemoteControl("Bedroom", "oldpi", "3000"),
           ],
         ),
       ),

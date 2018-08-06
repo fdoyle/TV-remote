@@ -18,5 +18,5 @@ POST {{baseUrl}}/raw HTTP/1.1
 content-type: application/json
 
 {
-    "transaction":"on 0"
+    "transaction":"F0:64:00:68:65:6C:6C:6F:20:77:6F:72:6C:64"
 }

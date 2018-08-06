@@ -26,13 +26,15 @@ process.on('SIGINT', function () {
 });
 
 
-cec.on('ROUTING_CHANGE', function (packet, fromSource, toSource) {
-    console.log('Routing changed from ' + fromSource + ' to ' + toSource + '.');
+// cec.on('ROUTING_CHANGE', function (packet, fromSource, toSource) {
+//     console.log('Routing changed from ' + fromSource + ' to ' + toSource + '.');
+// });
+
+cec.on('data',function (packet) {
+    console.log("packet");
 });
 
-cec.on('', function (packet, fromSource, toSource) {
-    console.log('Routing changed from ' + fromSource + ' to ' + toSource + '.');
-});
+
 
 
 
@@ -60,4 +62,4 @@ function startServer() {
     })
     app.listen(3000, () => console.log('Listening on port 3000'))
 }
-cec.start('cec-client', '-d', '8', '-b', 'r')
+cec.start('cec-client', '-b')
