@@ -15,7 +15,7 @@ app.use(bodyParser.json())
 cec.once('ready', function (client) {
     console.log(' -- READY -- ');
     client.sendCommand(0xf0, CEC.Opcode.GIVE_DEVICE_POWER_STATUS);
-    client.send('scan')
+    client.send('scan');
     startServer();
 });
 
@@ -65,4 +65,6 @@ function startServer() {
     })
     app.listen(3000, () => console.log('Listening on port 3000'))
 }
-cec.start('cec-client', '-b', 'r')
+cec.start('cec-client', '-t', 'r')
+
+//used to be -b 
