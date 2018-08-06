@@ -35,9 +35,9 @@ cec.on('SET_OSD_NAME', function (packet, source) {
     console.log("Set OSD name " + source);
 });
 
-cec.on('data', function (packet) {
-    console.log("data " + JSON.stringify(packet));
-});
+// cec.on('data', function (packet) {
+//     console.log("data " + JSON.stringify(packet));
+// });
 
 
 
