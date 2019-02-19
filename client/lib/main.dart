@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:TV/ServerLocator.dart';
 import 'package:flutter/material.dart';
 import 'remote.dart';
 
@@ -18,72 +21,15 @@ class MyApp extends StatelessWidget {
         // "hot reload" (press "r" in the console where you ran "flutter run",
         // or press Run > Flutter Hot Reload in IntelliJ). Notice that the
         // counter didn't reset back to zero; the application is not restarted.
-        primarySwatch: Colors.orange,
+        primarySwatch: Colors.grey,
       ),
-      home: new MyHomePage(title: 'TV Remote'),
+      home: new MainPage(title: 'TV Remote'),
     );
   }
 }
 
-class RemoteControl extends StatelessWidget {
-  final String host;
-  final String port;
-  final String name;
-
-  RemoteControl(this.name, this.host, this.port);
-
-  @override
-  Widget build(BuildContext context) {
-    Remote remote = new Remote(host: host, port: port);
-
-    return new Card(
-        margin: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
-        child: new Container(
-            margin: EdgeInsets.fromLTRB(20.0, 10.0, 10.0, 10.0),
-            child: new Row(
-              mainAxisSize: MainAxisSize.max,
-              children: <Widget>[
-                new Expanded(
-                    child: new Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    new Text(
-                      '$name',
-                      textAlign: TextAlign.left,
-                      style: new TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 20.0),
-                    ),
-                    new Text(
-                      '$host:$port',
-                      textAlign: TextAlign.left,
-                      style: new TextStyle(
-                          color: Colors.grey,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 10.0),
-                    ),
-                  ],
-                )),
-                new Row(
-                  children: <Widget>[
-                    new IconButton(
-                        padding: new EdgeInsets.symmetric(
-                            horizontal: 10.0, vertical: 10.0),
-                        icon: new Icon(Icons.flash_on),
-                        onPressed: remote.sendOn),
-                    new IconButton(
-                        padding: new EdgeInsets.symmetric(
-                            horizontal: 10.0, vertical: 10.0),
-                        icon: new Icon(Icons.flash_off),
-                        onPressed: remote.sendStandby),
-                  ],
-                )
-              ],
-            )));
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+class MainPage extends StatefulWidget {
+  MainPage({Key key, this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -97,24 +43,26 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  _MyHomePageState createState() => new _MyHomePageState();
+  _MainPageState createState() => new _MainPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 1;
+class _MainPageState extends State<MainPage> {
+  var servers = ["192.168.1.79", "192.168.1.83"];
+  Timer timer;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  @override
+  initState() {
+    super.initState();
+    timer = new Timer.periodic(Duration(seconds: 5), refreshTVList);
   }
 
-  void sendRequest() {}
+  void refreshTVList(Timer timer) async {}
+
+  @override
+  void deactivate() {
+    super.deactivate();
+    timer.cancel();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -126,35 +74,19 @@ class _MyHomePageState extends State<MyHomePage> {
     // than having to individually change instances of widgets.
 
     return new Scaffold(
-      appBar: new AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: new Text(widget.title),
-      ),
-      body: new Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: new Column(
-          // Column is also layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug paint" (press "p" in the console where you ran
-          // "flutter run", or select "Toggle Debug Paint" from the Flutter tool
-          // window in IntelliJ) to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            new RemoteControl("Living Room", "raspberrypi", "3000"),
-            new RemoteControl("Bedroom", "oldpi", "3000"),
-          ],
+        appBar: new AppBar(
+          // Here we take the value from the MyHomePage object that was created by
+          // the App.build method, and use it to set our appbar title.
+          title: new Text(widget.title),
         ),
-      ),
-    );
+        body: servers.length > 0
+            ? ListView.builder(
+                itemCount: servers.length > 0 ? servers.length : 1,
+                itemBuilder: (context, index) {
+                  return Text("hello world");
+                })
+            : Center(
+                child: Text("No Servers Found"),
+              ));
   }
 }
