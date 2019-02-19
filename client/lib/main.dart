@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:TV/RemoteControlWidget.dart';
 import 'package:TV/ServerLocator.dart';
 import 'package:flutter/material.dart';
-import 'remote.dart';
 
 void main() => runApp(new MyApp());
 
@@ -47,16 +47,22 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  var servers = ["192.168.1.79", "192.168.1.83"];
+  var servers = [];
   Timer timer;
 
   @override
   initState() {
     super.initState();
-    timer = new Timer.periodic(Duration(seconds: 5), refreshTVList);
+    refreshTVList(null);
+    timer = new Timer.periodic(Duration(seconds: 2), refreshTVList);
   }
 
-  void refreshTVList(Timer timer) async {}
+  void refreshTVList(Timer timer) async {
+    List<String> newServers = await ServerLocator().get();
+    setState(() {
+      this.servers = newServers;
+    });
+  }
 
   @override
   void deactivate() {
@@ -83,7 +89,7 @@ class _MainPageState extends State<MainPage> {
             ? ListView.builder(
                 itemCount: servers.length > 0 ? servers.length : 1,
                 itemBuilder: (context, index) {
-                  return Text("hello world");
+                  return RemoteControlWidget(ip: servers[index]);
                 })
             : Center(
                 child: Text("No Servers Found"),

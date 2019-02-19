@@ -141,7 +141,6 @@ class SSDPServer:
 
         logger.info('Discovery request from (%s,%d) for %s' % (host, port, headers['st']))
         logger.info('Discovery request for %s' % headers['st'])
-
         # Do we know about this service?
         for i in self.known.values():
             if i['MANIFESTATION'] == 'remote':
@@ -150,7 +149,6 @@ class SSDPServer:
                 continue
             if i['ST'] == headers['st'] or headers['st'] == 'ssdp:all':
                 response = ['HTTP/1.1 200 OK']
-
                 usn = None
                 for k, v in i.items():
                     if k == 'USN':
@@ -160,10 +158,8 @@ class SSDPServer:
 
                 if usn:
                     response.append('DATE: %s' % formatdate(timeval=None, localtime=False, usegmt=True))
-
                     response.extend(('', ''))
                     delay = random.randint(0, int(headers['mx']))
-
                     self.send_it('\r\n'.join(response), (host, port), delay, usn)
 
     def do_notify(self, usn):

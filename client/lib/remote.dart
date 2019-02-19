@@ -1,30 +1,41 @@
-import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-class Remote {
-  String host;
-  String port;
-  bool debug;
+import 'dart:io';
 
-  Remote({@required this.host, @required this.port, this.debug = false});
+class Remote{
+  WebSocket websocket;
 
-  void sendStandby() {
-    sendTransaction("standby 0");
+  void connect(String ip) async {
+    websocket = await WebSocket.connect("ws://${ip}:8765");
   }
 
-  void sendOn() {
-    sendTransaction("on 0");
+  void disconnect() async {
+    websocket.close();
+  }
+  
+  void turnOn() async {
+    websocket.add(Command("power_on").serialize());
   }
 
-  void sendTransaction(String transaction) {
-    debugPrint(transaction);
-    String payload = '{"transaction":"$transaction"}';
-    if (!debug) {
-      http.post('http://$host:$port/raw',
-          body: payload,
-          headers: {"content-type": "application/json"}).then((raw) {
-        debugPrint(raw.body);
-      });
-    }
+  void turnOff() async {
+    websocket.add(Command("power_off").serialize());
   }
 }
+
+class Command{
+  String command;
+  String target;
+  String newName;
+
+
+  Command(this.command, {this.target, this.newName});
+
+  String serialize() {
+    return jsonEncode({
+      "command":"${command}",
+      "target":"${target}",
+      "new_name":"${newName}",
+    });
+  }
+}
+

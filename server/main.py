@@ -1,3 +1,4 @@
+import uuid
 from json import JSONDecodeError
 
 import ssdpServer
@@ -7,6 +8,9 @@ import json
 import argparse
 import sys
 from sqlitedict import SqliteDict
+
+from lib.getIp import get_network_interface_ip_address
+from lib.upnp_http_server import UPNPHTTPServer
 from ssdpServer import SimpleSsdpServer
 from cecController import CecController
 from fakeCecController import FakeCecController
@@ -23,7 +27,24 @@ useFakeWebsocket = args.fakewebsocket
 config = SqliteDict('./config.sqlite', autocommit=True)
 
 # start ssdp listener
-# SimpleSsdpServer().start() # Flutter has *extremely* poor multicast support, and no working out of the box SSDP library anyway. We'll just use hard-coded ip's for now
+SimpleSsdpServer().start()
+
+# start ssdp web server
+device_uuid = uuid.uuid4()
+local_ip_address = get_network_interface_ip_address("en0")
+
+http_server = UPNPHTTPServer(8088,
+                             friendly_name="TV Remote",
+                             manufacturer="Frank D",
+                             manufacturer_url='',
+                             model_description='FrankDs TV remote',
+                             model_name="TV Remote",
+                             model_number="1",
+                             model_url="",
+                             serial_number="1",
+                             uuid=device_uuid,
+                             presentation_url="http://{}:8765/".format(local_ip_address))
+http_server.start()
 
 # start HDMI cec server
 connected = set()
@@ -45,10 +66,11 @@ cecController.start(handleCecUpdate)
 # start Websocket server
 
 async def handleConnection(websocket, path):
+    print("Client connected")
     connected.add(websocket)
     try:
         async for message in websocket:
-            await handleMessage(message)
+            await handleMessageAsync(message)
     finally:
         connected.remove(websocket)
 
@@ -86,7 +108,10 @@ def handleMessage(message):
         print(e)
 
 if (not useFakeWebsocket):
-    start_server = websockets.serve(handleConnection, 'localhost', 8765)
+    start_server = websockets.serve(handleConnection, '', 8765)
+    asyncio.get_event_loop().run_until_complete(start_server)
+    asyncio.get_event_loop().run_forever()
+
 else:
     for line in sys.stdin:
         handleMessage(line.rstrip())
