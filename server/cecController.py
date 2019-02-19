@@ -1,3 +1,4 @@
+import cec
 
 #cec.transmit(destination, opcode, parameters)
 
@@ -5,50 +6,54 @@
 class CecController:
     updateListener = None
 
-    def start(ul):
-        updateListener = ul
+
+
+
+    def start(self, ul):
+        self.updateListener = ul
         cec.init()
-        cec.add_callback(cb, cec.EVENT_ALL & ~cec.EVENT_LOG)
-        cec.add_callback(log_cb, cec.EVENT_LOG)
+        cec.add_callback(lambda event, *args: self.cb(event, args), cec.EVENT_ALL & ~cec.EVENT_LOG)
+        cec.add_callback(lambda event, level, time, message: self.log_cb(event, level, time, message), cec.EVENT_LOG)
 
-    def cb(event, *args):
+    def cb(self, event, *args):
         print("Got event", event, "with data", args)
-        currentCecState = _requestCurrentStatus()
-        if(updateListener != None):
-            updateListener(currentCecState)
+        currentCecState = self._requestCurrentStatus()
+        if(self.updateListener != None):
+            self.updateListener(currentCecState)
 
-    def log_cb(event, level, time, message):
+    def log_cb(self, event, level, time, message):
         print("CEC Log message:", message)
 
-    def switchToDevice(physicalAddress):
-        cec.transmit(cec.CECDEVICE_BROADCAST, cec.CEC_OPCODE_ACTIVE_SOURCE, target)
 
-    def play():
+    def switchToDevice(self, physicalAddress):
+        cec.transmit(cec.CECDEVICE_BROADCAST, cec.CEC_OPCODE_ACTIVE_SOURCE, physicalAddress)
+
+    def play(self):
         cec.transmit(cec.CECDEVICE_TV, cec.CEC_OPCODE_PLAY)
 
-    def pause():
+    def pause(self):
         cec.transmit(cec.CECDEVICE_TV, cec.CEC_OPCODE_PAUSE)
 
-    def volumeUp():
+    def volumeUp(self):
         cec.volume_up();
 
-    def volumeDown():
+    def volumeDown(self):
         cec.volume_down();
 
-    def toggleMute():
+    def toggleMute(self):
         cec.toggle_mute();
 
-    def powerOn():
+    def powerOn(self):
         cec.Device(cec.CECDEVICE_TV).power_on()
     
-    def powerOff():
+    def powerOff(self):
         cec.Device(cec.CECDEVICE_TV).standby()
 
-    def currentStatus():
+    def currentStatus(self):
         return currentCecState
 
 
-    def _requestCurrentStatus():
+    def _requestCurrentStatus(self):
         devices = cec.listDevices()
         status = {
             "name":"unknown",
@@ -61,4 +66,4 @@ class CecController:
                 "osd_string":device.osd_string
             })
         }
-        return status;
+        return status

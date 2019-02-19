@@ -1,45 +1,45 @@
 class FakeCecController:
 
-    def start(ul):
+    def start(self, ul):
         print("I started")
 
-    def cb(event, *args):
+    def cb(self, event, *args):
         print("Got event", event, "with data", args)
 
-    def log_cb(event, level, time, message):
+    def log_cb(self, event, level, time, message):
         print("CEC Log message:", message)
 
-    def switchToDevice(physicalAddress):
-        print("Switched to device {physicalAddress}")
+    def switchToDevice(self, physicalAddress):
+        print(f"Switched to device {physicalAddress}")
 
-    def play():
+    def play(self):
         print("playing")
 
-    def pause():
+    def pause(self):
         print("pausing")
 
-    def volumeUp():
+    def volumeUp(self):
         print("volume up")
 
-    def volumeDown():
+    def volumeDown(self):
         print("volume down")
 
-    def toggleMute():
+    def toggleMute(self):
         print("toggling mute")
 
-    def powerOn():
+    def powerOn(self):
         print("powering on")
     
-    def powerOff():
+    def powerOff(self):
         print("powering off")
 
-    def currentStatus():
+    def currentStatus(self):
         return {
             "devices":[]
         }
 
 
-    def _requestCurrentStatus():
+    def _requestCurrentStatus(self):
         devices = cec.listDevices()
         status = {
             "name":"unknown",
