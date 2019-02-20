@@ -22,6 +22,7 @@ class CecController:
         stream = cec.add_callback(stream_put)
         stream.start_stream()
         async for event, *args in stream_get:
+            self._requestCurrentStatus()
             yield self.currentCecState
 
     def cb(self, event, *args):
