@@ -89,7 +89,10 @@ class _MainPageState extends State<MainPage> {
             ? ListView.builder(
                 itemCount: servers.length > 0 ? servers.length : 1,
                 itemBuilder: (context, index) {
-                  return RemoteControlWidget(ip: servers[index]);
+                  return Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: RemoteControlWidget(ip: servers[index]),
+                  );
                 })
             : Center(
                 child: Text("No Servers Found"),

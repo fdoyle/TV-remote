@@ -66,9 +66,10 @@ else:
 
 def handleCecUpdate(cecState):
     cecState['name'] = config.get("name", "Unknown")
-    print(f"handling CEC update {cecState}")
-    print(f"connected devices: {len(connected)}")
+    # print(f"handling CEC update {cecState}")
+    # print(f"connected devices: {len(connected)}")
     for websocket in connected:
+        print(f"sending {json.dumps(cecState)} to {websocket.remote_address}")
         websocket.send(json.dumps(cecState))
 
 

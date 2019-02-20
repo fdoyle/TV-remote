@@ -31,12 +31,14 @@ class _RemoteControlState extends State<RemoteControlWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(color: Colors.white, boxShadow: [BoxShadow(blurRadius: 8)]),
+      decoration: BoxDecoration(
+          color: Colors.white, boxShadow: [BoxShadow(blurRadius: 8)]),
       child: StreamBuilder(
           stream: remote.getUpdateStream(),
-          initialData: {"name": "unknown", "devices": []},
           builder: (context, snapshot) {
+            var hasData = snapshot.hasData;
             var status = snapshot.data;
+            print(status);
             return Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
@@ -45,10 +47,10 @@ class _RemoteControlState extends State<RemoteControlWidget> {
                     padding: const EdgeInsets.all(8.0),
                     child: Text(widget.ip),
                   ),
-                  Padding(
+                  hasData? Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Text(status["name"]),
-                  ),
+                  ) : Container(),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Row(
@@ -82,7 +84,9 @@ class _RemoteControlState extends State<RemoteControlWidget> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: DeviceList(status["devices"], remote),
+                    child: hasData
+                        ? DeviceList(status["devices"], remote)
+                        : Text("Loading connected devices"),
                   )
                 ],
               ),
@@ -92,23 +96,22 @@ class _RemoteControlState extends State<RemoteControlWidget> {
   }
 }
 
-
-class DeviceList extends StatelessWidget{
+class DeviceList extends StatelessWidget {
   List<dynamic> deviceList;
-  Remote remote;//todo this should use inheretedWidget instead
-
+  Remote remote; //todo this should use inheretedWidget instead
 
   DeviceList(this.deviceList, this.remote);
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: deviceList.map((device)=>DeviceWidget(device, remote)).toList(),
+      children:
+          deviceList.map((device) => DeviceWidget(device, remote)).toList(),
     );
   }
 }
 
-class DeviceWidget extends StatelessWidget{
+class DeviceWidget extends StatelessWidget {
   dynamic device;
   Remote remote;
 
@@ -122,17 +125,15 @@ class DeviceWidget extends StatelessWidget{
     return GestureDetector(
       onTap: () => remote.switchToDevice(physicalAddress),
       child: Container(
-        decoration: BoxDecoration(color: Colors.white, boxShadow: [BoxShadow(blurRadius: 8)]),
+        decoration: BoxDecoration(
+            color: Colors.white, boxShadow: [BoxShadow(blurRadius: 8)]),
         child: Column(
           children: <Widget>[
             Text(osd_string),
-            Text(isActive? "Active": "Not Active")
+            Text(isActive ? "Active" : "Not Active")
           ],
         ),
       ),
     );
   }
-
-
-
 }
