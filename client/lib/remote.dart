@@ -8,44 +8,49 @@ import 'package:web_socket_channel/status.dart' as status;
 
 class Remote{
   IOWebSocketChannel websocket;
+  Stream stream;
 
   void connect(String ip) async {
     websocket = IOWebSocketChannel.connect("ws://${ip}:8765");
+    stream = websocket.stream.asBroadcastStream();
+    stream.listen((e){
+      print(e);
+    });
   }
 
   Stream getUpdateStream(){
-    return websocket.stream;
+    return stream;
   }
 
   void disconnect() async {
     websocket.sink.close();
   }
   
-  void turnOn() async {
+  void turnOn()  {
     websocket.sink.add(Command("power_on").serialize());
   }
 
-  void turnOff() async {
+  void turnOff()  {
     websocket.sink.add(Command("power_off").serialize());
   }
 
-  void volumeUp() async {
+  void volumeUp()  {
     websocket.sink.add(Command("volume_up").serialize());
   }
 
-  void volumeDown() async {
+  void volumeDown()  {
     websocket.sink.add(Command("volume_down").serialize());
   }
 
-  void toggleMute() async {
+  void toggleMute()  {
     websocket.sink.add(Command("power_off").serialize());
   }
 
-  void play() async {
+  void play()  {
     websocket.sink.add(Command("play").serialize());
   }
 
-  void pause() async {
+  void pause()  {
     websocket.sink.add(Command("pause").serialize());
   }
   
