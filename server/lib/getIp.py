@@ -1,6 +1,6 @@
 import netifaces as ni
 
-NETWORK_INTERFACE = "en0"
+# NETWORK_INTERFACE = "en0"
 def get_network_interface_ip_address(interface='eth0'):
     """
     Get the first IP address of a network interface.
@@ -8,7 +8,7 @@ def get_network_interface_ip_address(interface='eth0'):
     :return: The IP address.
     """
     while True:
-        if NETWORK_INTERFACE not in ni.interfaces():
+        if interface not in ni.interfaces():
             print('Could not find interface %s.' % (interface,))
             exit(1)
         interface = ni.ifaddresses(interface)

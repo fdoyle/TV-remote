@@ -1,15 +1,21 @@
 import threading
 import uuid
+from typing import Optional, Callable, Any, Iterable, Mapping
+
 from lib.ssdp import SSDPServer
 from lib.getIp import get_network_interface_ip_address
 
-NETWORK_INTERFACE = "en0"
 
 
 class SimpleSsdpServer(threading.Thread):
+
+    def __init__(self, interface):
+        super().__init__()
+        self.interface = interface
+
     def run(self):
         device_uuid = uuid.uuid4()
-        local_ip_address = get_network_interface_ip_address(NETWORK_INTERFACE)
+        local_ip_address = get_network_interface_ip_address(self.interface)
         ssdp = SSDPServer()
         print(f"Starting SSDP server on {local_ip_address}")
         ssdp.register('localhost',

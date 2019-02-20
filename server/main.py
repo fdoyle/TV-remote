@@ -20,18 +20,28 @@ parser.add_argument('--fakecec', help="Use Fake CEC client", action='store_true'
 parser.add_argument('--fakewebsocket',
                     help="Read commands from command line instead of listening for websocket commands",
                     action='store_true')
+parser.add_argument('--interface',
+                    help="network interface",
+                    default="wlan0")
+
+
 args = parser.parse_args()
 useFakeCec = args.fakecec
 useFakeWebsocket = args.fakewebsocket
 
+networkInterface = args.interface
+print(f"using interface {networkInterface}")
+
+
 config = SqliteDict('./config.sqlite', autocommit=True)
 
 # start ssdp listener
-SimpleSsdpServer().start()
+SimpleSsdpServer(networkInterface).start()
 
 # start ssdp web server
 device_uuid = uuid.uuid4()
-local_ip_address = get_network_interface_ip_address("en0")
+
+local_ip_address = get_network_interface_ip_address(networkInterface)
 
 http_server = UPNPHTTPServer(8088,
                              friendly_name="TV Remote",
