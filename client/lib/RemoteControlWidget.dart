@@ -39,56 +39,59 @@ class _RemoteControlState extends State<RemoteControlWidget> {
             var hasData = snapshot.hasData;
             var status = snapshot.data;
             print(status);
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("${widget.ip}"),
-                  ),
-                  hasData? Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text("${status['name']}"),
-                  ) : Container(),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: <Widget>[
-                        IconButton(
-                          icon: Icon(Icons.brightness_3),
-                          onPressed: remote.turnOff,
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.brightness_5),
-                          onPressed: remote.turnOn,
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.volume_up),
-                          onPressed: remote.volumeUp,
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.volume_down),
-                          onPressed: remote.volumeDown,
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.play_arrow),
-                          onPressed: remote.play,
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.pause),
-                          onPressed: remote.pause,
-                        )
-                      ],
+            return Material(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("${widget.ip}"),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: hasData
-                        ? DeviceList(status["devices"], remote)
-                        : Text("Loading connected devices"),
-                  )
-                ],
+                    hasData? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text("${status['name']}"),
+                    ) : Container(),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          IconButton(
+                            icon: Icon(Icons.brightness_3),
+                            onPressed: remote.turnOff,
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.brightness_5),
+                            onPressed: remote.turnOn,
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.volume_down),
+                            onPressed: remote.volumeDown,
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.volume_up),
+                            onPressed: remote.volumeUp,
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.play_arrow),
+                            onPressed: remote.play,
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.pause),
+                            onPressed: remote.pause,
+                          )
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: hasData
+                          ? DeviceList(status["devices"], remote)
+                          : Text("Loading connected devices"),
+                    )
+                  ],
+                ),
               ),
             );
           }),
