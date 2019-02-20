@@ -68,6 +68,6 @@ class CecController:
             "name": "unknown",
             "devices": deviceStatuses
         }
-        return status
+        selfcurrentCecState = status
 
 
