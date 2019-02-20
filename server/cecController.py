@@ -16,18 +16,9 @@ class CecController:
         # cec.add_callback(lambda event, level, time, message: self.log_cb(event, level, time, message), cec.EVENT_LOG)
         self.requestCurrentStatus()
 
-    async def eventStream(self):
-        stream_get, stream_put = make_iter()
-        cec.add_callback(stream_put)
-        async for event, *args in stream_get:
-            print("yielding event")
-            yield event
+    def addCallback(self, cb):
+        cec.add_callback(lambda event, *args: cb(event))
 
-    # def cb(self, event, *args):
-    #     print("Got event", event, "with data", args)
-    #     self.currentCecState = self._requestCurrentStatus()
-    #     if (self.updateListener != None):
-    #         self.updateListener(self.currentCecState)
 
     def log_cb(self, event, level, time, message):
         print("CEC Log message:", message)
@@ -80,12 +71,3 @@ class CecController:
         return status
 
 
-async def make_iter():
-    loop = asyncio.get_event_loop()
-    queue = asyncio.Queue()
-    def put(*args):
-        loop.call_soon_threadsafe(queue.put_nowait, args)
-    async def get():
-        while True:
-            yield queue.get()
-    return get(), put

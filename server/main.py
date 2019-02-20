@@ -1,3 +1,4 @@
+import threading
 import traceback
 import uuid
 from json import JSONDecodeError
@@ -63,7 +64,6 @@ else:
     cecController = CecController()
 
 
-
 async def handleCecUpdateAsync(cecState):
     print("handling cec update async")
     cecState['name'] = config.get("name", "Unknown")
@@ -72,8 +72,6 @@ async def handleCecUpdateAsync(cecState):
     for websocket in connected:
         await websocket.send(json.dumps(cecState))
         print(f"sending {json.dumps(cecState)} to {websocket.remote_address}")
-
-
 
 
 # start Websocket server
@@ -127,15 +125,44 @@ def handleMessage(message):
     except KeyError as e:
         print(e)
 
+
+async def make_iter():
+    loop = asyncio.get_event_loop()
+    queue = asyncio.Queue()
+
+    def put(*args):
+        loop.call_soon_threadsafe(queue.put_nowait, args)
+
+    async def get():
+        while True:
+            yield queue.get()
+
+    return get(), put
+
+
 async def main():
     print("starting server")
     await websockets.serve(handleConnection, '', 8765)
 
     cecController.start()
-    async for state in cecController.eventStream():
+
+    loop = asyncio.get_event_loop()
+    queue = asyncio.Queue()
+
+    def put(*args):
+        loop.call_soon_threadsafe(queue.put_nowait, args)
+
+    async def get():
+        while True:
+            yield await queue.get()
+
+    cecController.addCallback(put)
+
+
+
+    async for state in get():
         cecController.requestCurrentStatus()
         await handleCecUpdateAsync(cecController.currentStatus())
-
 
 if (not useFakeWebsocket):
     print("running event loop forever")
@@ -145,5 +172,3 @@ if (not useFakeWebsocket):
 else:
     for line in sys.stdin:
         handleMessage(line.rstrip())
-
-

@@ -7,15 +7,13 @@ class FakeCecController:
     def start(self):
         pass
 
+    def addCallback(self, cb):
+        self._startTimer(cb)
 
-    async def eventStream(self):
-        stream_get, stream_put = await make_iter()
-        threading.Timer(1000, stream_put).start()
-        async for event in stream_get:
-            yield event
+    def _startTimer(self,cb):
+        cb()
+        threading.Timer(1, self._startTimer, [cb]).start()
 
-    def cb(self, event, *args):
-        print("Got event", event, "with data", args)
 
     def log_cb(self, event, level, time, message):
         print("CEC Log message:", message)
