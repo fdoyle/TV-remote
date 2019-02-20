@@ -36,7 +36,7 @@ class CecController:
         b2 = splitInt[1]
         b3 = splitInt[2]
         b4 = splitInt[3]
-        return bytes([b1 << 3 + b2, b3 << b4])
+        return bytes([b1 << 3 + b2, b3 << 3 + b4])
 
     def switchToDevice(self, physicalAddress):
         print(f"Switching to device {physicalAddress}")
