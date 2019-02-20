@@ -136,10 +136,10 @@ async def main():
     await websockets.serve(handleConnection, '', 8765)
 
     cecController.start(handleCecUpdate)
-    stateIter = cecController.eventStream()
+    stateIter = await cecController.eventStream()
     async for state in stateIter:
         cecController.requestCurrentStatus()
-        await handleCecUpdateAsync(cecController.currentCecState)
+        await handleCecUpdateAsync(cecController.currentStatus())
 
 
 if (not useFakeWebsocket):
