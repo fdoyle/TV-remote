@@ -65,7 +65,7 @@ else:
 
 def handleCecUpdate(cecState):
     print("handling cec update")
-    asyncio.get_event_loop().run_until_complete(handleCecUpdateAsync(cecState))
+    asyncio.get_running_loop().run_until_complete(handleCecUpdateAsync(cecState))
 
 
 async def handleCecUpdateAsync(cecState):
@@ -78,7 +78,6 @@ async def handleCecUpdateAsync(cecState):
         print(f"sending {json.dumps(cecState)} to {websocket.remote_address}")
 
 
-cecController.start(handleCecUpdate)
 
 
 # start Websocket server
@@ -132,14 +131,24 @@ def handleMessage(message):
     except KeyError as e:
         print(e)
 
+async def main():
+    print("starting server")
+    await start_server()
+
+    cecController.start(handleCecUpdate)
+
+    async for state in cecController.eventStream():
+        await handleCecUpdateAsync(state)
+
 
 if (not useFakeWebsocket):
     start_server = websockets.serve(handleConnection, '', 8765)
-    print("starting server")
-    asyncio.get_event_loop().run_until_complete(start_server)
     print("running event loop forever")
+    asyncio.get_event_loop().run_until_complete(main())
     asyncio.get_event_loop().run_forever()
 
 else:
     for line in sys.stdin:
         handleMessage(line.rstrip())
+
+
