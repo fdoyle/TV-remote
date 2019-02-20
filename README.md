@@ -48,6 +48,8 @@ Clicking into TV shows the TV detail page
 * Connected device items:
   * click to switch to device
   * allows user to rename devices
+  
+![current](https://github.com/fdoyle/TV-remote/blob/v2/demo.png)
 
 
 Sad news: Ideally, this project would use Pipenv instead of the sad shell script to install dependencies. Unfortunately, pipEnv doesn't seem to like the hdmi-cec library im using, while pip works fine, so I'm stuck with that. 
