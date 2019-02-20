@@ -6,7 +6,7 @@ import socket
 
 # cec.transmit(destination, opcode, parameters)
 
-def addressStringToBytes(self, physicalAddressString):
+def addressStringToBytes(physicalAddressString):
     split = physicalAddressString.split(".")  # ["1","2","3","4"]
     splitInt = [int(str) for str in split]  # [1,2,3,4]
     b1 = splitInt[0]
