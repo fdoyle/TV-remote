@@ -51,7 +51,7 @@ class CecController:
         return self.currentCecState
 
     def _requestCurrentStatus(self):
-        devices = cec.listDevices()
+        devices = cec.list_devices()
         status = {
             "name": "unknown",
             "devices": map(lambda device: {
@@ -63,4 +63,5 @@ class CecController:
                 "osd_string": device.osd_string
             }, devices)
         }
+        print(f"current status \n{status}")
         return status
