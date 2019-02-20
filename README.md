@@ -1,6 +1,5 @@
 
 # Objective: 
-
 Allow a mobile app to control tv's
 
 ## Requirements:
@@ -49,7 +48,20 @@ Clicking into TV shows the TV detail page
   * click to switch to device
   * allows user to rename devices
   
+## short-term to-do: 
+* improve stability (some websocket errors render server nonresponsive) 
+* volume 
+* play/pause
+* dont show TV as selectable input
+* responsive buttons
+
+## long-term to-do 
+* make it pretty?
+  * add images for items (so like chromecast shows a chromecast, ps4 shows a ps4, etc)
+  * show active source (currently it shows which sources are playing, but not which source the TV is currently displaying)
+
+  
 ![current](https://github.com/fdoyle/TV-remote/blob/v2/demo.png)
 
 
-Sad news: Ideally, this project would use Pipenv instead of the sad shell script to install dependencies. Unfortunately, pipEnv doesn't seem to like the hdmi-cec library im using, while pip works fine, so I'm stuck with that. 
+Ideally, this project would use Pipenv instead of the sad shell script to install dependencies. Unfortunately, pipEnv doesn't seem to like the hdmi-cec library im using, while pip works fine, so I'm stuck with that. 
