@@ -64,10 +64,12 @@ else:
 
 
 def handleCecUpdate(cecState):
+    print("handling cec update")
     asyncio.get_event_loop().run_until_complete(handleCecUpdateAsync(cecState))
 
 
 async def handleCecUpdateAsync(cecState):
+    print("handling cec update async")
     cecState['name'] = config.get("name", "Unknown")
     # print(f"handling CEC update {cecState}")
     # print(f"connected devices: {len(connected)}")
@@ -133,7 +135,9 @@ def handleMessage(message):
 
 if (not useFakeWebsocket):
     start_server = websockets.serve(handleConnection, '', 8765)
+    print("starting server")
     asyncio.get_event_loop().run_until_complete(start_server)
+    print("running event loop forever")
     asyncio.get_event_loop().run_forever()
 
 else:

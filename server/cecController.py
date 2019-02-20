@@ -69,5 +69,4 @@ class CecController:
             "name": "unknown",
             "devices": deviceStatuses
         }
-        print(f"current status \n{json.dumps(status)}")
         return status
