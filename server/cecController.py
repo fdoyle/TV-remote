@@ -55,14 +55,14 @@ class CecController:
         devices = cec.list_devices()
         status = {
             "name": "unknown",
-            "devices": map(lambda device: {
+            "devices": list(map(lambda device: {
                 "name": "unknown",
                 "powered": device.is_on(),
                 "active": device.is_active(),
                 "address": device.address,
                 "physical_address": device.physical_address,
                 "osd_string": device.osd_string
-            }, devices)
+            }, devices))
         }
         print(f"current status \n{json.dumps(status)}")
         return status
