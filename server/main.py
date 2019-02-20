@@ -154,15 +154,16 @@ async def main():
 
     async def get():
         while True:
-            yield await queue.get()
+            result = await queue.get()
+            print("got item from queue")
+            yield result
 
     cecController.addCallback(put)
-
-
 
     async for state in get():
         cecController.requestCurrentStatus()
         await handleCecUpdateAsync(cecController.currentStatus())
+
 
 if (not useFakeWebsocket):
     print("running event loop forever")
