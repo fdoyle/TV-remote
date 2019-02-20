@@ -55,7 +55,9 @@ class Remote {
 
   void switchToDevice(String physicalAddress) {
     print("Switching target to ${physicalAddress}");
-    websocket.sink.add(Command("switch", target: physicalAddress).serialize());
+    var command = Command("switch", target: physicalAddress).serialize();
+    print(command);
+    websocket.sink.add(command);
   }
 }
 
