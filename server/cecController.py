@@ -12,6 +12,7 @@ class CecController:
         cec.init()
         cec.add_callback(lambda event, *args: self.cb(event, args), cec.EVENT_ALL & ~cec.EVENT_LOG)
         cec.add_callback(lambda event, level, time, message: self.log_cb(event, level, time, message), cec.EVENT_LOG)
+        self._requestCurrentStatus()
 
     def cb(self, event, *args):
         print("Got event", event, "with data", args)
