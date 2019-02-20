@@ -6,6 +6,16 @@ import socket
 
 # cec.transmit(destination, opcode, parameters)
 
+def addressStringToBytes(self, physicalAddressString):
+    split = physicalAddressString.split(".")  # ["1","2","3","4"]
+    splitInt = [int(str) for str in split]  # [1,2,3,4]
+    b1 = splitInt[0]
+    b2 = splitInt[1]
+    b3 = splitInt[2]
+    b4 = splitInt[3]
+    first = int(str(b1 * 10 + b2), 16)
+    second = int(str(b3 * 10 + b4), 16)
+    return bytes([first, second])
 
 class CecController:
     updateListener = None
@@ -29,18 +39,11 @@ class CecController:
         print(f"Switching to device byte {physicalAddress}")
         cec.transmit(cec.CECDEVICE_BROADCAST, cec.CEC_OPCODE_ACTIVE_SOURCE, physicalAddress)
 
-    def addressStringToBytes(self, physicalAddressString):
-        split = physicalAddressString.split(".")  # ["1","2","3","4"]
-        splitInt = [int(str) for str in split]  # [1,2,3,4]
-        b1 = splitInt[0]
-        b2 = splitInt[1]
-        b3 = splitInt[2]
-        b4 = splitInt[3]
-        return bytes([b1 << 3 + b2, b3 << 3 + b4])
+
 
     def switchToDevice(self, physicalAddress):
         print(f"Switching to device {physicalAddress}")
-        self.switchToDeviceByBytes(self.addressStringToBytes(physicalAddress))
+        self.switchToDeviceByBytes(addressStringToBytes(physicalAddress))
 
     def play(self):
         cec.transmit(cec.CECDEVICE_TV, cec.CEC_OPCODE_PLAY)
