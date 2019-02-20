@@ -133,6 +133,7 @@ def handleMessage(message):
 
 async def main():
     print("starting server")
+    start_server = websockets.serve(handleConnection, '', 8765)
     await start_server()
 
     cecController.start(handleCecUpdate)
@@ -142,7 +143,6 @@ async def main():
 
 
 if (not useFakeWebsocket):
-    start_server = websockets.serve(handleConnection, '', 8765)
     print("running event loop forever")
     asyncio.get_event_loop().run_until_complete(main())
     asyncio.get_event_loop().run_forever()
