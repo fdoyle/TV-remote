@@ -160,7 +160,8 @@ async def main():
 
     cecController.addCallback(put)
 
-    async for state in get():
+    async for event in get():
+        print(event)
         cecController.requestCurrentStatus()
         await handleCecUpdateAsync(cecController.currentStatus())
 

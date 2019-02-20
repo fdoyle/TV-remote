@@ -19,7 +19,7 @@ class CecController:
         self.requestCurrentStatus()
 
     def addCallback(self, cb):
-        cec.add_callback(lambda event, *args: cb(event))
+        cec.add_callback(lambda event, *args: cb(event), cec.EVENT_ALL & ~cec.EVENT_LOG)
 
 
     def log_cb(self, event, level, time, message):
