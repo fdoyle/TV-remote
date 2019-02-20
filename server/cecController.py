@@ -10,6 +10,8 @@ import socket
 class CecController:
     updateListener = None
 
+    currentCecState = None
+
     def start(self):
         cec.init()
         # cec.add_callback(lambda event, *args: self.cb(event, args), cec.EVENT_ALL & ~cec.EVENT_LOG)
@@ -68,6 +70,6 @@ class CecController:
             "name": "unknown",
             "devices": deviceStatuses
         }
-        selfcurrentCecState = status
+        self.currentCecState = status
 
 
