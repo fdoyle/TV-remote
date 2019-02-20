@@ -21,15 +21,13 @@ class CecController:
         stream_get, stream_put = make_iter()
         stream = cec.add_callback(stream_put)
         stream.start_stream()
-        async for event, *args in stream_get:
-            self._requestCurrentStatus()
-            yield self.currentCecState
+        return stream_get
 
-    def cb(self, event, *args):
-        print("Got event", event, "with data", args)
-        self.currentCecState = self._requestCurrentStatus()
-        if (self.updateListener != None):
-            self.updateListener(self.currentCecState)
+    # def cb(self, event, *args):
+    #     print("Got event", event, "with data", args)
+    #     self.currentCecState = self._requestCurrentStatus()
+    #     if (self.updateListener != None):
+    #         self.updateListener(self.currentCecState)
 
     def log_cb(self, event, level, time, message):
         print("CEC Log message:", message)
@@ -66,7 +64,7 @@ class CecController:
     def currentStatus(self):
         return self.currentCecState
 
-    def _requestCurrentStatus(self):
+    def requestCurrentStatus(self):
         deviceStatuses = [{
                 "name": "unknown",
                 "powered": device.is_on(),
