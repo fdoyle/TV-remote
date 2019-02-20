@@ -5,74 +5,71 @@ import 'dart:io';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/status.dart' as status;
 
-
-class Remote{
+class Remote {
   IOWebSocketChannel websocket;
   Stream stream;
 
   void connect(String ip) async {
     websocket = IOWebSocketChannel.connect("ws://${ip}:8765");
     stream = websocket.stream.asBroadcastStream();
-    stream.listen((e){
+    stream.listen((e) {
       print(e);
     });
   }
 
-  Stream getUpdateStream(){
+  Stream getUpdateStream() {
     return stream;
   }
 
   void disconnect() async {
     websocket.sink.close();
   }
-  
-  void turnOn()  {
+
+  void turnOn() {
     websocket.sink.add(Command("power_on").serialize());
   }
 
-  void turnOff()  {
+  void turnOff() {
     websocket.sink.add(Command("power_off").serialize());
   }
 
-  void volumeUp()  {
+  void volumeUp() {
     websocket.sink.add(Command("volume_up").serialize());
   }
 
-  void volumeDown()  {
+  void volumeDown() {
     websocket.sink.add(Command("volume_down").serialize());
   }
 
-  void toggleMute()  {
+  void toggleMute() {
     websocket.sink.add(Command("power_off").serialize());
   }
 
-  void play()  {
+  void play() {
     websocket.sink.add(Command("play").serialize());
   }
 
-  void pause()  {
+  void pause() {
     websocket.sink.add(Command("pause").serialize());
   }
-  
-  void switchToDevice(String physicalAddress){
+
+  void switchToDevice(String physicalAddress) {
     websocket.sink.add(Command("switch", target: physicalAddress));
   }
 }
 
-class Command{
+class Command {
   String command;
   String target;
   String newName;
-
 
   Command(this.command, {this.target, this.newName});
 
   String serialize() {
     return jsonEncode({
-      "command":"${command}",
-      "target":"${target}",
-      "new_name":"${newName}",
+      "command": "${command}",
+      "target": "${target}",
+      "new_name": "${newName}",
     });
   }
 }
-

@@ -80,6 +80,7 @@ cecController.start(handleCecUpdate)
 async def handleConnection(websocket, path):
     print("Client connected")
     connected.add(websocket)
+    websocket.send(json.dumps(cecController.currentStatus()))
     try:
         async for message in websocket:
             await handleMessageAsync(message)
@@ -106,6 +107,10 @@ def handleMessage(message):
         elif (command == "power_on"):
             cecController.powerOn()
         elif (command == "power_off"):
+            cecController.powerOff()
+        elif (command == "volume_up"):
+            cecController.powerOff()
+        elif (command == "volume_down"):
             cecController.powerOff()
         elif (command == "switch"):
             cecController.switchToDevice(target)
