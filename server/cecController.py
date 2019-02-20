@@ -10,8 +10,7 @@ import socket
 class CecController:
     updateListener = None
 
-    def start(self, ul):
-        self.updateListener = ul
+    def start(self):
         cec.init()
         # cec.add_callback(lambda event, *args: self.cb(event, args), cec.EVENT_ALL & ~cec.EVENT_LOG)
         # cec.add_callback(lambda event, level, time, message: self.log_cb(event, level, time, message), cec.EVENT_LOG)
@@ -19,9 +18,10 @@ class CecController:
 
     async def eventStream(self):
         stream_get, stream_put = make_iter()
-        stream = cec.add_callback(stream_put)
-        stream.start_stream()
-        return stream_get
+        cec.add_callback(stream_put)
+        for event, *args in stream_get:
+            print("yielding event")
+            yield event
 
     # def cb(self, event, *args):
     #     print("Got event", event, "with data", args)

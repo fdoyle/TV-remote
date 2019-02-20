@@ -1,3 +1,4 @@
+import traceback
 import uuid
 from json import JSONDecodeError
 
@@ -61,11 +62,6 @@ if (useFakeCec):
 else:
     cecController = CecController()
 
-
-
-def handleCecUpdate(cecState):
-    print("handling cec update")
-    asyncio.get_running_loop().run_until_complete(handleCecUpdateAsync(cecState))
 
 
 async def handleCecUpdateAsync(cecState):
@@ -135,9 +131,8 @@ async def main():
     print("starting server")
     await websockets.serve(handleConnection, '', 8765)
 
-    cecController.start(handleCecUpdate)
-    stateIter = await cecController.eventStream()
-    async for state in stateIter:
+    cecController.start()
+    async for state in cecController.eventStream():
         cecController.requestCurrentStatus()
         await handleCecUpdateAsync(cecController.currentStatus())
 
