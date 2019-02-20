@@ -63,14 +63,20 @@ if (useFakeCec):
 else:
     cecController = CecController()
 
-sendLoop = asyncio.new_event_loop()
+loop = asyncio.new_event_loop()
+asyncio.set_event_loop(loop)
+
 
 def handleCecUpdate(cecState):
+    loop.run_until_complete(handleCecUpdateAsync(cecState))
+
+
+async def handleCecUpdateAsync(cecState):
     cecState['name'] = config.get("name", "Unknown")
     # print(f"handling CEC update {cecState}")
     # print(f"connected devices: {len(connected)}")
     for websocket in connected:
-        sendLoop.run_until_complete(websocket.send(json.dumps(cecState)))
+        await websocket.send(json.dumps(cecState))
         print(f"sending {json.dumps(cecState)} to {websocket.remote_address}")
 
 

@@ -45,11 +45,11 @@ class _RemoteControlState extends State<RemoteControlWidget> {
                 children: <Widget>[
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text(widget.ip),
+                    child: Text("${widget.ip}"),
                   ),
                   hasData? Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text(status["name"]),
+                    child: Text("${status['name']}"),
                   ) : Container(),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -124,14 +124,18 @@ class DeviceWidget extends StatelessWidget {
     String physicalAddress = device["physical_address"];
     return GestureDetector(
       onTap: () => remote.switchToDevice(physicalAddress),
-      child: Container(
-        decoration: BoxDecoration(
-            color: Colors.white, boxShadow: [BoxShadow(blurRadius: 8)]),
-        child: Column(
-          children: <Widget>[
-            Text(osd_string),
-            Text(isActive ? "Active" : "Not Active")
-          ],
+      child: Padding(
+        padding: const EdgeInsets.all(4.0),
+        child: Container(
+          decoration: BoxDecoration(
+              color: Colors.white, boxShadow: [BoxShadow(blurRadius: 3, color: Colors.black26)]),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Text(osd_string),
+              Text(isActive ? "Active" : "Not Active")
+            ],
+          ),
         ),
       ),
     );

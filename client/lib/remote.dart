@@ -18,7 +18,7 @@ class Remote {
   }
 
   Stream getUpdateStream() {
-    return stream;
+    return stream.map((str)=>jsonDecode(str));
   }
 
   void disconnect() async {
@@ -54,7 +54,8 @@ class Remote {
   }
 
   void switchToDevice(String physicalAddress) {
-    websocket.sink.add(Command("switch", target: physicalAddress));
+    print("Switching target to ${physicalAddress}");
+    websocket.sink.add(Command("switch", target: physicalAddress).serialize());
   }
 }
 

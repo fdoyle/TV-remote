@@ -25,9 +25,11 @@ class CecController:
         print("CEC Log message:", message)
 
     def switchToDeviceByBytes(self, physicalAddress):
+        print(f"Switching to device byte {physicalAddress}")
         cec.transmit(cec.CECDEVICE_BROADCAST, cec.CEC_OPCODE_ACTIVE_SOURCE, physicalAddress)
 
     def switchToDevice(self, physicalAddress):
+        print(f"Switching to device {physicalAddress}")
         self.switchToDeviceByBytes(socket.inet_aton(physicalAddress))
 
     def play(self):

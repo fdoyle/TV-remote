@@ -208,7 +208,7 @@ class DeviceDiscoverer {
 
   Future<List<DiscoveredDevice>> discoverDevices({
     String type,
-    Duration timeout: const Duration(seconds: 10)
+    Duration timeout: const Duration(seconds: 3)
   }) {
     return discoverClients(timeout: timeout).then((clients) {
       if (clients.isEmpty) {
