@@ -1,4 +1,5 @@
 import cec
+import json
 
 
 # cec.transmit(destination, opcode, parameters)
@@ -11,7 +12,7 @@ class CecController:
         self.updateListener = ul
         cec.init()
         cec.add_callback(lambda event, *args: self.cb(event, args), cec.EVENT_ALL & ~cec.EVENT_LOG)
-        cec.add_callback(lambda event, level, time, message: self.log_cb(event, level, time, message), cec.EVENT_LOG)
+        # cec.add_callback(lambda event, level, time, message: self.log_cb(event, level, time, message), cec.EVENT_LOG)
         self._requestCurrentStatus()
 
     def cb(self, event, *args):
@@ -63,5 +64,5 @@ class CecController:
                 "osd_string": device.osd_string
             }, devices)
         }
-        print(f"current status \n{status}")
+        print(f"current status \n{json.dumps(status)}")
         return status
