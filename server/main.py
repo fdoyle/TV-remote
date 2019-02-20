@@ -83,10 +83,12 @@ cecController.start(handleCecUpdate)
 async def handleConnection(websocket, path):
     print("Client connected")
     connected.add(websocket)
-    websocket.send(json.dumps(cecController.currentStatus()))
+    await websocket.send(json.dumps(cecController.currentStatus()))
     try:
         async for message in websocket:
             await handleMessageAsync(message)
+            await websocket.send(json.dumps(cecController.currentStatus()))
+
     finally:
         connected.remove(websocket)
 
