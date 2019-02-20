@@ -1,6 +1,6 @@
 import cec
 import json
-
+import socket
 
 # cec.transmit(destination, opcode, parameters)
 
@@ -24,8 +24,11 @@ class CecController:
     def log_cb(self, event, level, time, message):
         print("CEC Log message:", message)
 
-    def switchToDevice(self, physicalAddress):
+    def switchToDeviceByBytes(self, physicalAddress):
         cec.transmit(cec.CECDEVICE_BROADCAST, cec.CEC_OPCODE_ACTIVE_SOURCE, physicalAddress)
+
+    def switchToDevice(self, physicalAddress):
+        self.switchToDeviceByBytes(socket.inet_aton(physicalAddress))
 
     def play(self):
         cec.transmit(cec.CECDEVICE_TV, cec.CEC_OPCODE_PLAY)
@@ -52,17 +55,17 @@ class CecController:
         return self.currentCecState
 
     def _requestCurrentStatus(self):
-        devices = cec.list_devices()
-        status = {
-            "name": "unknown",
-            "devices": list(map(lambda device: {
+        deviceStatuses = [{
                 "name": "unknown",
                 "powered": device.is_on(),
                 "active": device.is_active(),
                 "address": device.address,
                 "physical_address": device.physical_address,
                 "osd_string": device.osd_string
-            }, devices))
+            } for index, device in cec.list_devices().items()]
+        status = {
+            "name": "unknown",
+            "devices": deviceStatuses
         }
         print(f"current status \n{json.dumps(status)}")
         return status
