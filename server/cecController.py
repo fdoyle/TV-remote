@@ -17,9 +17,9 @@ class CecController:
 
     def cb(self, event, *args):
         print("Got event", event, "with data", args)
-        currentCecState = self._requestCurrentStatus()
+        self.currentCecState = self._requestCurrentStatus()
         if(self.updateListener != None):
-            self.updateListener(currentCecState)
+            self.updateListener(self.currentCecState)
 
     def log_cb(self, event, level, time, message):
         print("CEC Log message:", message)
