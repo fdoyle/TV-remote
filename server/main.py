@@ -24,14 +24,12 @@ parser.add_argument('--interface',
                     help="network interface",
                     default="wlan0")
 
-
 args = parser.parse_args()
 useFakeCec = args.fakecec
 useFakeWebsocket = args.fakewebsocket
 
 networkInterface = args.interface
 print(f"using interface {networkInterface}")
-
 
 config = SqliteDict('./config.sqlite', autocommit=True)
 
@@ -63,12 +61,10 @@ if (useFakeCec):
 else:
     cecController = CecController()
 
-loop = asyncio.new_event_loop()
-asyncio.set_event_loop(loop)
 
 
 def handleCecUpdate(cecState):
-    loop.run_until_complete(handleCecUpdateAsync(cecState))
+    asyncio.get_event_loop().run_until_complete(handleCecUpdateAsync(cecState))
 
 
 async def handleCecUpdateAsync(cecState):
@@ -78,7 +74,6 @@ async def handleCecUpdateAsync(cecState):
     for websocket in connected:
         await websocket.send(json.dumps(cecState))
         print(f"sending {json.dumps(cecState)} to {websocket.remote_address}")
-
 
 
 cecController.start(handleCecUpdate)
@@ -134,6 +129,7 @@ def handleMessage(message):
         print(e)
     except KeyError as e:
         print(e)
+
 
 if (not useFakeWebsocket):
     start_server = websockets.serve(handleConnection, '', 8765)
