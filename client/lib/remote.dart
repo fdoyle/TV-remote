@@ -10,7 +10,7 @@ class Remote {
   Stream stream;
 
   void connect(String ip) async {
-    websocket = IOWebSocketChannel.connect("ws://${ip}:8765");
+    websocket = IOWebSocketChannel.connect("ws://${ip}:8765/");
     stream = websocket.stream.asBroadcastStream();
     stream.listen((e) {
       print(e);
