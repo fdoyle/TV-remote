@@ -133,8 +133,7 @@ def handleMessage(message):
 
 async def main():
     print("starting server")
-    start_server = websockets.serve(handleConnection, '', 8765)
-    await start_server()
+    await websockets.serve(handleConnection, '', 8765)
 
     cecController.start(handleCecUpdate)
 
