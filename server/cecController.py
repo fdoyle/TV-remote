@@ -19,7 +19,7 @@ class CecController:
     async def eventStream(self):
         stream_get, stream_put = make_iter()
         cec.add_callback(stream_put)
-        for event, *args in stream_get:
+        async for event, *args in stream_get:
             print("yielding event")
             yield event
 
