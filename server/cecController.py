@@ -1,13 +1,11 @@
 import cec
 
-#cec.transmit(destination, opcode, parameters)
+
+# cec.transmit(destination, opcode, parameters)
 
 
 class CecController:
     updateListener = None
-
-
-
 
     def start(self, ul):
         self.updateListener = ul
@@ -18,12 +16,11 @@ class CecController:
     def cb(self, event, *args):
         print("Got event", event, "with data", args)
         self.currentCecState = self._requestCurrentStatus()
-        if(self.updateListener != None):
+        if (self.updateListener != None):
             self.updateListener(self.currentCecState)
 
     def log_cb(self, event, level, time, message):
         print("CEC Log message:", message)
-
 
     def switchToDevice(self, physicalAddress):
         cec.transmit(cec.CECDEVICE_BROADCAST, cec.CEC_OPCODE_ACTIVE_SOURCE, physicalAddress)
@@ -45,25 +42,24 @@ class CecController:
 
     def powerOn(self):
         cec.Device(cec.CECDEVICE_TV).power_on()
-    
+
     def powerOff(self):
         cec.Device(cec.CECDEVICE_TV).standby()
 
     def currentStatus(self):
         return self.currentCecState
 
-
     def _requestCurrentStatus(self):
         devices = cec.listDevices()
         status = {
-            "name":"unknown",
-            "devices":map(lambda device: {
-                "name":"unknown",
-                "powered":device.is_on(),
-                "active":device.is_active(),
-                "address":device.address,
-                "physical_address":device.physical_address,
-                "osd_string":device.osd_string
-            })
+            "name": "unknown",
+            "devices": map(lambda device: {
+                "name": "unknown",
+                "powered": device.is_on(),
+                "active": device.is_active(),
+                "address": device.address,
+                "physical_address": device.physical_address,
+                "osd_string": device.osd_string
+            }, devices)
         }
         return status
