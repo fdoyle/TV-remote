@@ -50,7 +50,7 @@ class CecController:
         cec.Device(cec.CECDEVICE_TV).standby()
 
     def currentStatus(self):
-        return currentCecState
+        return self.currentCecState
 
 
     def _requestCurrentStatus(self):
