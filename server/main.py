@@ -70,7 +70,10 @@ async def handleCecUpdateAsync(cecState):
     # print(f"handling CEC update {cecState}")
     # print(f"connected devices: {len(connected)}")
     for websocket in connected:
-        await websocket.send(json.dumps(cecState))
+        try:
+            await websocket.send(json.dumps(cecState))
+        except Exception as e:
+            print("failed to update client", e)
 
 
 # start Websocket server
