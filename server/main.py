@@ -71,7 +71,6 @@ async def handleCecUpdateAsync(cecState):
     # print(f"connected devices: {len(connected)}")
     for websocket in connected:
         await websocket.send(json.dumps(cecState))
-        print(f"sending {json.dumps(cecState)} to {websocket.remote_address}")
 
 
 # start Websocket server
@@ -82,18 +81,12 @@ async def handleConnection(websocket, path):
     await websocket.send(json.dumps(cecController.currentStatus()))
     try:
         async for message in websocket:
-            await handleMessageAsync(message)
-            await websocket.send(json.dumps(cecController.currentStatus()))
-
+            await handleMessage(websocket, message)
     finally:
         connected.remove(websocket)
 
 
-async def handleMessageAsync(message):
-    handleMessage(message)
-
-
-def handleMessage(message):
+async def handleMessage(ws, message):
     print(f"< {message}")
     try:
         messageDict = json.loads(message)
@@ -120,10 +113,17 @@ def handleMessage(message):
             if (newName != None and not newName.isspace()):
                 config["name"] = newName
 
+                
+        cecController.requestCurrentStatus()
+        await ws.send(json.dumps(cecController.currentStatus())) # This can throw, if the websocket is closed, so make sure to catch it
+        print(f"sending {json.dumps(cecController.currentStatus())} to {ws.remote_address}")
     except JSONDecodeError as e:
         print(e)
     except KeyError as e:
         print(e)
+    except Exception as e:
+        print(e)
+
 
 
 async def make_iter():
