@@ -58,7 +58,7 @@ http_server.start()
 
 # start HDMI cec server
 connected = set()
-if (useFakeCec):
+if useFakeCec:
     cecController = FakeCecController()
 else:
     cecController = CecController()
@@ -82,6 +82,8 @@ async def handleConnection(websocket, path):
     try:
         async for message in websocket:
             await handleMessage(websocket, message)
+    except ConnectionError:
+        pass  # do nothing, but don't crash
     finally:
         connected.remove(websocket)
 
@@ -92,38 +94,38 @@ async def handleMessage(ws, message):
         messageDict = json.loads(message)
         command = messageDict['command']
         target = messageDict.get('target', None)
-        if (command == "play"):
+        if command == "play":
             cecController.play()
-        elif (command == "pause"):
+        elif command == "pause":
             cecController.pause()
-        elif (command == "status"):
+        elif command == "status":
             cecController.currentStatus()
-        elif (command == "power_on"):
+        elif command == "power_on":
             cecController.powerOn()
-        elif (command == "power_off"):
+        elif command == "power_off":
             cecController.powerOff()
-        elif (command == "volume_up"):
+        elif command == "volume_up":
             cecController.powerOff()
-        elif (command == "volume_down"):
+        elif command == "volume_down":
             cecController.powerOff()
-        elif (command == "switch"):
+        elif command == "switch":
             cecController.switchToDevice(target)
-        elif (command == "rename"):
+        elif command == "rename":
             newName = messageDict.get("new_name", None)
-            if (newName != None and not newName.isspace()):
+            if newName != None and not newName.isspace():
                 config["name"] = newName
 
-                
         cecController.requestCurrentStatus()
-        await ws.send(json.dumps(cecController.currentStatus())) # This can throw, if the websocket is closed, so make sure to catch it
-        print(f"sending {json.dumps(cecController.currentStatus())} to {ws.remote_address}")
+        if ws is not None:
+            await ws.send(json.dumps(
+                cecController.currentStatus()))  # This can throw, if the websocket is closed, so make sure to catch it
+            print(f"sending {json.dumps(cecController.currentStatus())} to {ws.remote_address}")
     except JSONDecodeError as e:
         print(e)
     except KeyError as e:
         print(e)
     except Exception as e:
         print(e)
-
 
 
 async def make_iter():
@@ -166,11 +168,11 @@ async def main():
         await handleCecUpdateAsync(cecController.currentStatus())
 
 
-if (not useFakeWebsocket):
+if not useFakeWebsocket:
     print("running event loop forever")
     asyncio.get_event_loop().run_until_complete(main())
     asyncio.get_event_loop().run_forever()
 
 else:
     for line in sys.stdin:
-        handleMessage(line.rstrip())
+        handleMessage(None, line.rstrip())
