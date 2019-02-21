@@ -80,6 +80,7 @@ async def handleCecUpdateAsync(cecState):
 
 async def handleConnection(websocket, path):
     print("Client connected")
+    print(f"    {len(connected)} connections")
     connected.add(websocket)
     await websocket.send(json.dumps(cecController.currentStatus()))
     try:
@@ -88,6 +89,8 @@ async def handleConnection(websocket, path):
     except ConnectionError:
         pass  # do nothing, but don't crash
     finally:
+        print("Client disconnected")
+        print(f"    {len(connected)} connections")
         connected.remove(websocket)
 
 
@@ -160,7 +163,6 @@ async def main():
     async def get():
         while True:
             result = await queue.get()
-            print("got item from queue")
             yield result
 
     cecController.addCallback(put)
